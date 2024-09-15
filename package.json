@@ -2,18 +2,18 @@
   "name": "vwh-upload",
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev src/index.ts",
+    "dev": "wrangler dev --remote src/index.ts",
     "deploy": "wrangler deploy --minify src/index.ts",
+    "bucket:create": "npx wrangler r2 bucket create vwh-upload-bucket",
     "db:create": "bunx wrangler d1 create vwh-upload-database",
     "db:generate": "drizzle-kit generate:sqlite",
-    "db:migrate": "bunx wrangler d1 migrations apply vwh-upload-database --local",
+    "db:migrate": "bunx wrangler d1 migrations apply vwh-upload-database --remote",
     "db:admin": "drizzle-kit up:sqlite"
   },
   "dependencies": {
     "@libsql/client": "^0.11.0",
     "drizzle-orm": "^0.30.4",
-    "hono": "^4.6.1",
-    "node-cloudflare-r2": "^0.3.1"
+    "hono": "^4.6.1"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240909.0",

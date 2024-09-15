@@ -1,9 +1,15 @@
 import { Hono } from "hono";
-import { bucket } from "../lib/bucket";
+import type { Context } from "../types";
 
-export const healthRoutes = new Hono()
+export const healthRoutes = new Hono<Context>()
+  .basePath("/health")
   .get("/bucket", async (c) => {
-    return c.status((await bucket.exists()) ? 200 : 500);
+    try {
+      await c.env.BUCKET.get("random-key");
+      return c.status(200);
+    } catch {
+      return c.status(500);
+    }
   })
   .get("/server", async (c) => {
     return c.status(200);

@@ -12,6 +12,7 @@ export type DrizzleDB = DrizzleD1Database<typeof schema>;
 export type Context = {
   Bindings: {
     DB: D1Database;
+    BUCKET: R2Bucket;
   };
   Variables: {
     fileRecord: FileRecord;
