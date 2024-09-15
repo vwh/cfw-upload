@@ -9,7 +9,8 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
-
+.wrangler
+.dev.vars
 # Caches
 
 .cache
@@ -100,6 +101,7 @@ web_modules/
 
 # dotenv environment variable files
 
+wrangler.toml
 .env
 .env.development.local
 .env.test.local

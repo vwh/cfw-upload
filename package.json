@@ -2,14 +2,16 @@
   "name": "vwh-upload",
   "type": "module",
   "scripts": {
-    "dev": "bun run --hot src/index.ts"
+    "dev": "wrangler dev src/index.ts",
+    "deploy": "wrangler deploy --minify src/index.ts"
   },
   "dependencies": {
-    "dotenv": "^16.4.5",
     "hono": "^4.6.1",
     "node-cloudflare-r2": "^0.3.1"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@cloudflare/workers-types": "^4.20240909.0",
+    "@types/bun": "latest",
+    "wrangler": "^3.78.2"
   }
 }
