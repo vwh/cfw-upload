@@ -7,8 +7,7 @@
     "bucket:create": "npx wrangler r2 bucket create vwh-upload-bucket",
     "db:create": "bunx wrangler d1 create vwh-upload-database",
     "db:generate": "drizzle-kit generate:sqlite",
-    "db:migrate": "bunx wrangler d1 migrations apply vwh-upload-database --remote",
-    "db:admin": "drizzle-kit up:sqlite"
+    "db:migrate": "bunx wrangler d1 migrations apply vwh-upload-database --remote"
   },
   "dependencies": {
     "@libsql/client": "^0.11.0",
@@ -19,7 +18,6 @@
     "@cloudflare/workers-types": "^4.20240909.0",
     "@types/bun": "latest",
     "drizzle-kit": "^0.20.14",
-    "dotenv": "^16.4.5",
     "wrangler": "^3.78.2"
   }
 }
