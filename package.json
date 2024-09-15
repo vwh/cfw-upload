@@ -5,6 +5,7 @@
     "dev": "bun run --hot src/index.ts"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "hono": "^4.6.1",
     "node-cloudflare-r2": "^0.3.1"
   },
