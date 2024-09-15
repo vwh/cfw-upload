@@ -3,34 +3,34 @@ import { createMiddleware } from "hono/factory";
 import { shortBase64Hash } from "../lib/hash";
 import { bucket } from "../lib/bucket";
 
-interface FileRecord {
-  name: string;
-  size: number;
-  type: string;
-}
+import type { Context } from "../types";
 
-type Env = {
-  Variables: {
-    fileRecord: FileRecord;
-  };
-};
+import { getDB } from "../db/";
+import { files } from "../db/schema";
+import { eq } from "drizzle-orm";
 
-const fakeDatabase: Record<string, FileRecord> = {};
-
-const fileExistsMiddleware = createMiddleware<Env>(async (c, next) => {
+const fileExistsMiddleware = createMiddleware<Context>(async (c, next) => {
   const fileId = c.req.param("file-id");
   if (!fileId) {
     return c.json({ error: "Missing file ID" }, 400);
   }
-  const fileRecord = fakeDatabase[fileId];
+
+  const db = getDB(c);
+  const fileRecord = await db
+    .select()
+    .from(files)
+    .where(eq(files.id, fileId))
+    .get();
+
   if (!fileRecord) {
     return c.json({ error: "File not found" }, 404);
   }
+
   c.set("fileRecord", fileRecord);
   await next();
 });
 
-const fileRoutes = new Hono()
+const fileRoutes = new Hono<Context>()
   .get("/info/:file-id{[A-z0-9]+}", fileExistsMiddleware, (c) => {
     const fileRecord = c.get("fileRecord");
     return c.json(fileRecord);
@@ -49,16 +49,24 @@ const fileRoutes = new Hono()
 
       const fileId = shortBase64Hash(`${file.name}-${file.size}-${file.type}`);
       const fileBuffer = new Uint8Array(await file.arrayBuffer());
+
       await bucket.upload(fileBuffer, fileId, {}, file.type);
 
-      fakeDatabase[fileId] = {
-        name: file.name,
-        size: file.size,
-        type: file.type,
-      };
+      const db = getDB(c);
+      await db
+        .insert(files)
+        .values({
+          id: fileId,
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          expires_at: Date.now() + 3600000,
+        })
+        .run();
 
       return c.json({ fileId, message: "File uploaded successfully" });
-    } catch {
+    } catch (e) {
+      console.error("Upload error:", e);
       return c.json({ error: "Failed to upload file" }, 500);
     }
   })
