@@ -1,0 +1,14 @@
+{
+  "name": "vwh-upload",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --hot src/index.ts"
+  },
+  "dependencies": {
+    "hono": "^4.6.1",
+    "node-cloudflare-r2": "^0.3.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}
