@@ -161,7 +161,7 @@ export default function UploadDropzone() {
                 )}
               </div>
               <div className="flex flex-grow flex-col">
-                <p className="w-full max-w-[230px] truncate text-xs md:max-w-full">
+                <p className="w-full max-w-[230px] truncate text-xs sm:max-w-full">
                   {uploadedFile.file.name}
                 </p>
                 {uploadedFile.isUploading ? (
