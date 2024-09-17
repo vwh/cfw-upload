@@ -16,12 +16,16 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.424.0",
+    "next-themes": "^0.3.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-dropzone": "^14.2.3",
+    "sonner": "^1.5.0",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@types/bun": "latest",
     "@types/node": "^22.4.1",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
@@ -40,8 +44,7 @@
     "vite": "^5.4.1",
     "vite-plugin-compression": "^0.5.1",
     "vite-plugin-dynamic-import": "^1.5.0",
-    "vite-plugin-imagemin": "^0.6.1",
-    "@types/bun": "latest"
+    "vite-plugin-imagemin": "^0.6.1"
   },
   "packageManager": "npm@10.5.0"
 }
