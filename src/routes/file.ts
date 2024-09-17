@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { createMiddleware } from "hono/factory";
+
 import { shortBase64Hash } from "../lib/hash";
 import type { Context } from "../types";
 
@@ -45,12 +46,11 @@ const fileRoutes = new Hono<Context>()
     });
   })
   .post("/upload", async (c) => {
+    const body = await c.req.parseBody();
+    const file = body.file;
+    if (!(file instanceof File)) return c.json({ error: "Invalid file" }, 400);
+    const fileId = shortBase64Hash(`${file.name}-${file.size}-${file.type}`);
     try {
-      const body = await c.req.parseBody();
-      const file = body.file;
-      if (!(file instanceof File))
-        return c.json({ error: "Invalid file" }, 400);
-      const fileId = shortBase64Hash(`${file.name}-${file.size}-${file.type}`);
       const fileBuffer = await file.arrayBuffer();
       await c.env.BUCKET.put(fileId, fileBuffer, {
         httpMetadata: {
@@ -73,19 +73,10 @@ const fileRoutes = new Hono<Context>()
       if (typeof e === "object" && e !== null && "message" in e) {
         const errorMessage = (e as { message: string }).message;
         if (errorMessage.includes("UNIQUE constraint failed: files.id")) {
-          return c.json({ error: "File already exists" }, 409);
+          return c.json({ fileId, message: "File already exists" });
         }
       }
       return c.json({ error: "Failed to upload file" }, 500);
-    }
-  })
-  .delete("/:file-id{[A-z0-9]+}", fileExistsMiddleware, async (c) => {
-    try {
-      const fileId = c.req.param("file-id");
-      await c.env.BUCKET.delete(fileId);
-      return c.json({ message: "File deleted successfully" });
-    } catch (error) {
-      return c.json({ error: "Failed to delete file" }, 500);
     }
   });
 
