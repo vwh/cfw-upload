@@ -17,7 +17,7 @@ const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100 MB
 async function uploadFile(file: File): Promise<UploadResponse> {
   const formData = new FormData();
   formData.append("file", file);
-  const response = await fetch(API_BASE_URL, {
+  const response = await fetch(`${API_BASE_URL}/upload`, {
     method: "POST",
     body: formData,
     headers: { Accept: "application/json" }
