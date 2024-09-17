@@ -6,7 +6,7 @@ import type { Context } from "../types";
 
 import { getDB } from "../db/";
 import { files } from "../db/schema";
-import { eq } from "drizzle-orm";
+import { eq, lt } from "drizzle-orm";
 
 const fileExistsMiddleware = createMiddleware<Context>(async (c, next) => {
   const fileId = c.req.param("file-id");
@@ -65,7 +65,8 @@ const fileRoutes = new Hono<Context>()
           name: file.name,
           type: file.type,
           size: file.size,
-          expires_at: Date.now() + 3600000,
+          created_at: Date.now(),
+          expires_at: Date.now() + 1000 * 60 * 60 * 24 * 3,
         })
         .run();
       return c.json({ fileId, message: "File uploaded successfully" });
@@ -78,6 +79,15 @@ const fileRoutes = new Hono<Context>()
       }
       return c.json({ error: "Failed to upload file" }, 500);
     }
+  })
+  .post("/cleanup", async (c) => {
+    const db = getDB(c);
+    const headerKey = c.req.header("x-api-key");
+    if (!headerKey || headerKey !== c.get("API_KEY")) {
+      return c.json({ error: "Missing API key or invalid" }, 401);
+    }
+    await db.delete(files).where(lt(files.expires_at, Date.now())).run();
+    return c.json({ message: "Cleanup complete" });
   });
 
 export { fileRoutes };

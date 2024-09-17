@@ -17,5 +17,6 @@ export type Context = {
   Variables: {
     fileRecord: FileRecord;
     db: DrizzleDB;
+    API_KEY: string;
   };
 };
