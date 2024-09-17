@@ -6,7 +6,9 @@ import ReactDOM from "react-dom/client";
 import { Toaster } from "@/components/ui/sonner";
 import App from "@/App.tsx";
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
+export const API_BASE_URL = "http://localhost:8787";
+
+ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <main className="container mx-auto">
       <div className="mt-8 flex h-full flex-col items-center gap-6">
@@ -21,7 +23,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         </a>
         <App />
         <footer className="flex flex-col text-center text-primary">
-          <span>Serverless files upload service, anonymously and free.</span>
+          <span>
+            Serverless temp files upload service, anonymously and free.
+          </span>
           <a
             target="_blank"
             rel="noopener noreferrer"

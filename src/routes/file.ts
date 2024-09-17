@@ -30,7 +30,7 @@ const fileExistsMiddleware = createMiddleware<Context>(async (c, next) => {
 });
 
 const fileRoutes = new Hono<Context>()
-  .get("/info/:file-id{[A-z0-9]+}", fileExistsMiddleware, (c) => {
+  .get("/info/:file-id{[A-z0-9]+}", fileExistsMiddleware, async (c) => {
     const fileRecord = c.get("fileRecord");
     return c.json(fileRecord);
   })

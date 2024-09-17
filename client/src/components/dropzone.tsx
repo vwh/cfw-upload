@@ -1,38 +1,26 @@
 import { useCallback, useState, useMemo, useEffect } from "react";
-
 import { useDropzone, type FileRejection } from "react-dropzone";
-import { toast } from "sonner";
 
+import { API_BASE_URL } from "@/main";
+import { toast } from "sonner";
 import {
   UploadIcon,
   SquareArrowOutUpRightIcon,
   LoaderCircleIcon
 } from "lucide-react";
 
-type Response = {
-  fileId: string;
-  message: string;
-};
-
-interface UploadedFile {
-  file: File;
-  preview: string;
-  response?: Response;
-  isUploading: boolean;
-}
+import type { UploadedFile, UploadResponse } from "@/types";
 
 const MAX_FILES = 6;
 const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100 MB
 
-async function uploadFile(file: File): Promise<Response> {
+async function uploadFile(file: File): Promise<UploadResponse> {
   const formData = new FormData();
   formData.append("file", file);
-  const response = await fetch("http://localhost:8787/upload", {
+  const response = await fetch(API_BASE_URL, {
     method: "POST",
     body: formData,
-    headers: {
-      Accept: "application/json"
-    }
+    headers: { Accept: "application/json" }
   });
 
   if (!response.ok) {
@@ -50,52 +38,50 @@ export default function UploadDropzone() {
     setCurrentURL(window.location.href);
   }, []);
 
+  const handleFileUpload = useCallback(async (uploadedFile: UploadedFile) => {
+    try {
+      const response = await uploadFile(uploadedFile.file);
+      setUploadedFiles((prevFiles) =>
+        prevFiles.map((f) =>
+          f.file.name === uploadedFile.file.name
+            ? { ...f, response, isUploading: false }
+            : f
+        )
+      );
+      toast.success(`${uploadedFile.file.name} uploaded successfully`);
+    } catch (error) {
+      setUploadedFiles((prevFiles) =>
+        prevFiles.map((f) =>
+          f.file.name === uploadedFile.file.name
+            ? { ...f, isUploading: false }
+            : f
+        )
+      );
+      toast.error(`Failed to upload ${uploadedFile.file.name}`);
+    }
+  }, []);
+
   const onDrop = useCallback(
-    async (acceptedFiles: File[], fileRejections: FileRejection[]) => {
+    (acceptedFiles: File[], fileRejections: FileRejection[]) => {
       if (uploadedFiles.length + acceptedFiles.length > MAX_FILES) {
         toast.error(`You can only upload a maximum of ${MAX_FILES} files.`);
         return;
       }
-      if (fileRejections.length > 0) {
-        for (const rejection of fileRejections) {
-          for (const error of rejection.errors) {
-            toast.error(error.message);
-          }
+      for (const rejection of fileRejections) {
+        for (const error of rejection.errors) {
+          toast.error(error.message);
         }
-        return;
       }
-
+      if (fileRejections.length > 0) return;
       const newFiles: UploadedFile[] = acceptedFiles.map((file) => ({
         file,
         preview: URL.createObjectURL(file),
         isUploading: true
       }));
-
       setUploadedFiles((prevFiles) => [...prevFiles, ...newFiles]);
-      for (const uploadedFile of newFiles) {
-        try {
-          const response = await uploadFile(uploadedFile.file);
-          setUploadedFiles((prevFiles) =>
-            prevFiles.map((f) =>
-              f.file.name === uploadedFile.file.name
-                ? { ...f, response, isUploading: false }
-                : f
-            )
-          );
-          toast.success(`${uploadedFile.file.name} uploaded successfully`);
-        } catch (error) {
-          setUploadedFiles((prevFiles) =>
-            prevFiles.map((f) =>
-              f.file.name === uploadedFile.file.name
-                ? { ...f, isUploading: false }
-                : f
-            )
-          );
-          toast.error(`Failed to upload ${uploadedFile.file.name}`);
-        }
-      }
+      newFiles.forEach(handleFileUpload);
     },
-    [uploadedFiles]
+    [uploadedFiles, handleFileUpload]
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -125,6 +111,23 @@ export default function UploadDropzone() {
     [isDragActive]
   );
 
+  const FileStatus = ({ uploadedFile }: { uploadedFile: UploadedFile }) => {
+    if (uploadedFile.isUploading) {
+      return (
+        <LoaderCircleIcon className="h-full w-full animate-spin text-gray-400" />
+      );
+    }
+    return (
+      <a
+        href={uploadedFile.response ? `/${uploadedFile.response.fileId}` : "#"}
+        target="_blank"
+        rel="noreferrer"
+      >
+        <SquareArrowOutUpRightIcon className="h-9 w-9 text-gray-400" />
+      </a>
+    );
+  };
+
   return (
     <section className="mx-auto w-full space-y-3">
       <div {...getRootProps()} className={dropzoneClass}>
@@ -146,19 +149,7 @@ export default function UploadDropzone() {
               className="relative flex items-center gap-1 rounded-lg border p-2 hover:border-gray-400 dark:border-gray-700 dark:hover:border-gray-600"
             >
               <div className="relative h-9 w-9">
-                {uploadedFile.isUploading ? (
-                  <LoaderCircleIcon className="h-full w-full animate-spin text-gray-400" />
-                ) : uploadedFile.response ? (
-                  <a
-                    href={`/${uploadedFile.response.fileId}`}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <SquareArrowOutUpRightIcon className="h-9 w-9 text-gray-400" />
-                  </a>
-                ) : (
-                  <SquareArrowOutUpRightIcon className="h-9 w-9 text-gray-400" />
-                )}
+                {<FileStatus uploadedFile={uploadedFile} />}
               </div>
               <div className="flex flex-grow flex-col">
                 <p className="w-full max-w-[230px] truncate text-xs sm:max-w-full">
