@@ -1,26 +1,29 @@
-import ModeToggle from "@/components/theme/theme-toggle";
-import { Button } from "./components/ui/button";
-
-import { CodeXmlIcon } from "lucide-react";
 import UploadDropzone from "./components/dropzone";
 
 export default function App() {
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-4 px-4">
-      <section className="flex w-full flex-col items-center gap-1 text-center">
-        <UploadDropzone />
-      </section>
-      <section className="flex gap-2">
-        <ModeToggle />
+    <div className="mt-8 flex h-full flex-col items-center gap-6">
+      <a href="/">
+        <img
+          draggable={false}
+          src="/logo.webp"
+          className="h-28 w-28"
+          alt="Vite logo"
+          title="Logo"
+        />
+      </a>
+      <UploadDropzone />
+      <section className="flex flex-col text-center text-primary">
+        <span>Serverless files upload service, anonymously and free.</span>
         <a
-          title="GitHub Repo"
-          href="https://github.com/vwh/revite"
           target="_blank"
           rel="noopener noreferrer"
+          href="https://github.com/vwh/vwh-upload"
+          className="hover:underline"
         >
-          <Button variant="gooeyRight" size="icon" aria-label="GitHub">
-            <CodeXmlIcon className="h-[1.2rem] w-[1.2rem]" />
-          </Button>
+          <strong>
+            Made with <span className="animate-pulse">💙</span> by @vwh
+          </strong>
         </a>
       </section>
     </div>

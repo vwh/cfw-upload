@@ -10,11 +10,20 @@ interface UploadedFile extends File {
   preview: string;
 }
 
+const MAX_FILES = 6;
+const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100 MB in bytes
+
 export default function UploadDropzone() {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
 
   const onDrop = useCallback(
     (acceptedFiles: File[], fileRejections: FileRejection[]) => {
+      // Check if adding new files would exceed the limit
+      if (uploadedFiles.length + acceptedFiles.length > MAX_FILES) {
+        toast.error(`You can only upload a maximum of ${MAX_FILES} files.`);
+        return;
+      }
+
       if (fileRejections.length > 0) {
         for (const rejection of fileRejections) {
           for (const error of rejection.errors) {
@@ -33,12 +42,23 @@ export default function UploadDropzone() {
         )
       ]);
     },
-    []
+    [uploadedFiles]
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    multiple: true
+    multiple: true,
+    maxSize: MAX_FILE_SIZE,
+    maxFiles: MAX_FILES,
+    validator: (file) => {
+      if (uploadedFiles.length >= MAX_FILES) {
+        return {
+          code: "too-many-files",
+          message: `You can only upload a maximum of ${MAX_FILES} files.`
+        };
+      }
+      return null;
+    }
   });
 
   const removeFile = (file: UploadedFile) => {
@@ -50,12 +70,12 @@ export default function UploadDropzone() {
 
   const onUpload = () => {
     console.log("Uploading files:", uploadedFiles);
-    // TOOD: Upload files
+    // TODO: Upload files
     toast.success("Upload started!");
   };
 
   return (
-    <section className="mx-auto w-full space-y-4">
+    <section className="mx-auto w-full space-y-3">
       <div
         {...getRootProps()}
         className={`flex w-full transform cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 py-12 transition-colors duration-300 ease-in-out ${
@@ -66,13 +86,23 @@ export default function UploadDropzone() {
       >
         <input {...getInputProps()} />
         <UploadIcon className="h-10 w-10 text-gray-400" />
-        <p className="mt-2 text-sm text-gray-500">
+        <p className="text-md mt-2 text-gray-500">
           <span className="font-semibold">Click to upload</span> or drag and
           drop
+        </p>
+        <p className="mt-1 text-sm text-gray-500">
+          Max {MAX_FILES} files, up to 100 MB each
         </p>
       </div>
       {uploadedFiles.length > 0 && (
         <>
+          <Button
+            className="text-md w-full font-bold"
+            variant="outline"
+            onClick={onUpload}
+          >
+            Start Uploading
+          </Button>
           <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
             {uploadedFiles.map((file) => (
               <div
@@ -101,7 +131,6 @@ export default function UploadDropzone() {
               </div>
             ))}
           </div>
-          <Button onClick={onUpload}>Upload Files</Button>
         </>
       )}
     </section>
