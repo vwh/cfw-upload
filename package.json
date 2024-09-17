@@ -4,7 +4,9 @@
   "scripts": {
     "dev": "wrangler dev --remote src/index.ts",
     "deploy": "wrangler deploy --minify src/index.ts",
-    "bucket:create": "npx wrangler r2 bucket create vwh-upload-bucket",
+    "page:create": "bunx wrangler pages project create vwh-upload-page",
+    "page:deploy": "bunx wrangler pages deploy ./client/dist --commit-dirty=true",
+    "bucket:create": "bunx wrangler r2 bucket create vwh-upload-bucket",
     "db:create": "bunx wrangler d1 create vwh-upload-database",
     "db:generate": "drizzle-kit generate:sqlite",
     "db:migrate": "bunx wrangler d1 migrations apply vwh-upload-database --remote"
