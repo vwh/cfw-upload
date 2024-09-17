@@ -5,9 +5,7 @@ export default function FilePage() {
 
   return (
     <div className="mt-8 flex h-full flex-col items-center gap-6">
-      <h1>Dynamic Page</h1>
       <p>Page ID: {id}</p>
-      <Link to="/">Go back to Home</Link>
     </div>
   );
 }
