@@ -2,7 +2,7 @@
   "name": "vwh-upload",
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev --remote src/index.ts",
+    "dev": "wrangler dev --remote --test-scheduled src/index.ts",
     "deploy": "wrangler deploy --minify src/index.ts",
     "page:create": "bunx wrangler pages project create vwh-upload-page",
     "page:deploy": "bunx wrangler pages deploy ./client/dist --commit-dirty=true",
