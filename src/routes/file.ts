@@ -5,6 +5,8 @@ import { shortBase64Hash } from "../lib/hash";
 import type { Context } from "../types";
 import { insertFile, getFile } from "../db";
 
+const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100 MB
+
 const fileExistsMiddleware = createMiddleware<Context>(async (c, next) => {
   const fileId = c.req.param("file-id");
   if (!fileId) return c.json({ error: "Missing file ID" }, 400);
@@ -39,6 +41,8 @@ export const fileRoutes = new Hono<Context>()
     const file = body.file;
 
     if (!(file instanceof File)) return c.json({ error: "Invalid file" }, 400);
+    if (file.size > MAX_FILE_SIZE)
+      return c.json({ error: "File too large" }, 400);
     const fileId = shortBase64Hash(`${file.name}-${file.size}-${file.type}`);
 
     try {

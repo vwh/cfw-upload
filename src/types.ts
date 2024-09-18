@@ -5,6 +5,9 @@ export interface FileRecord {
   name: string;
   size: number;
   type: string;
+  id: string;
+  created_at: number;
+  expires_at: number;
 }
 
 export type DrizzleDB = DrizzleD1Database<typeof schema>;
