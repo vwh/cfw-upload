@@ -1,0 +1,19 @@
+name = "vwh-upload"
+compatibility_date = "2023-12-01"
+compatibility_flags = [ "nodejs_compat_v2" ]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "vwh-upload-database"
+database_id = "32360fb5-c043-418f-8418-757eee36bfc6"
+migrations_table = "d1_migrations"
+migrations_dir = "src/db/migrations"
+
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "vwh-upload-bucket"
+preview_bucket_name = "vwh-upload-bucket"
+
+[triggers]
+crons = ["0 * * * *"]
+
