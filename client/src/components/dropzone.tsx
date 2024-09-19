@@ -164,7 +164,9 @@ export default function UploadDropzone() {
                     rel="noreferrer"
                     className="truncate text-xs text-primary hover:underline"
                   >
-                    {currentURL}
+                    <span className="max-w-[250px] truncate sm:max-w-full">
+                      {currentURL}
+                    </span>
                     {uploadedFile.response.fileId}
                   </a>
                 ) : (

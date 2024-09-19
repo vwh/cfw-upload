@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 
-import { API_BASE_URL } from "@/main";
+import { API_BASE_URL, CDN_BASE_URL } from "@/main";
 import type { FileData } from "@/types";
 import { Button } from "./components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -10,7 +10,11 @@ import {
   formatFileSize,
   formatTimeAgo
 } from "@/lib/formaters";
-import { LoaderCircleIcon, FileIcon } from "lucide-react";
+import {
+  LoaderCircleIcon,
+  FileIcon,
+  SquareArrowOutUpRightIcon
+} from "lucide-react";
 
 export default function FilePage() {
   const { id } = useParams<{ id: string }>();
@@ -85,45 +89,59 @@ export default function FilePage() {
   }
 
   return (
-    <section className="mx-auto w-full max-w-2xl space-y-3">
-      <div className="rounded-lg border p-6 shadow-sm">
-        <div className="space-y-4">
-          <div className="flex items-center gap-4">
-            <FileIcon className="h-12 w-12" />
-            <h2 className="max-w-[250px] truncate font-semibold text-primary sm:max-w-full md:text-2xl">
-              {fileData.name}
-            </h2>
-          </div>
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            {[
-              { label: "Type", value: fileData.type },
-              { label: "Size", value: formatFileSize(fileData.size) },
-              { label: "Created", value: formatTimeAgo(fileData.created_at) },
-              { label: "Expires", value: formatExpiresIn(fileData.expires_at) }
-            ].map(({ label, value }) => (
-              <div key={label}>
-                <p className="font-medium">{label}</p>
-                <p className="text-primary">{value}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-        <Button
-          onClick={downloadFile}
-          disabled={isDownloading}
-          variant="gooeyLeft"
-          className="mt-4 w-full"
-        >
-          {isDownloading ? (
-            <div className="flex items-center gap-2">
-              Downloading
-              <LoaderCircleIcon className="h-5 w-5 animate-spin" />
+    <>
+      <section className="mx-auto w-full max-w-2xl space-y-3">
+        <div className="rounded-lg border p-6 shadow-sm">
+          <div className="space-y-4">
+            <div className="flex items-center gap-4">
+              <FileIcon className="h-12 w-12" />
+              <h2 className="max-w-[250px] truncate font-semibold text-primary sm:max-w-full md:text-2xl">
+                {fileData.name}
+              </h2>
             </div>
-          ) : (
-            "Download"
-          )}
-        </Button>
-      </div>
-    </section>
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              {[
+                { label: "Type", value: fileData.type },
+                { label: "Size", value: formatFileSize(fileData.size) },
+                { label: "Created", value: formatTimeAgo(fileData.created_at) },
+                {
+                  label: "Expires",
+                  value: formatExpiresIn(fileData.expires_at)
+                }
+              ].map(({ label, value }) => (
+                <div key={label}>
+                  <p className="font-medium">{label}</p>
+                  <p className="text-primary">{value}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <Button
+            onClick={downloadFile}
+            disabled={isDownloading}
+            variant="gooeyLeft"
+            className="mt-4 w-full"
+          >
+            {isDownloading ? (
+              <div className="flex items-center gap-2">
+                Downloading
+                <LoaderCircleIcon className="h-5 w-5 animate-spin" />
+              </div>
+            ) : (
+              "Download"
+            )}
+          </Button>
+        </div>
+      </section>
+      <a
+        href={`${CDN_BASE_URL}/${fileData.id}`}
+        target="_blank"
+        rel="noreferrer"
+        className="mx-auto flex w-full max-w-2xl items-center gap-2 rounded border p-2 text-center"
+      >
+        <SquareArrowOutUpRightIcon className="h-9 w-9 text-gray-400" />
+        <span className="max-w-[250px] truncate sm:max-w-full">{`${CDN_BASE_URL}/${fileData.id}`}</span>
+      </a>
+    </>
   );
 }

@@ -6,7 +6,8 @@ import ReactDOM from "react-dom/client";
 import { Toaster } from "@/components/ui/sonner";
 import App from "@/App.tsx";
 
-export const API_BASE_URL = "https://vwh-upload.yazanemails.workers.dev";
+export const API_BASE_URL = "https://files.vwh.sh/api";
+export const CDN_BASE_URL = "https://cdn.vwh.sh";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

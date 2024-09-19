@@ -9,6 +9,7 @@ import { cleanup } from "./db";
 
 const app = new Hono<Context>()
   .use("/*", cors())
+  .basePath("/api")
   .route("/", fileRoutes)
   .route("/", healthRoutes);
 
