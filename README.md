@@ -35,14 +35,14 @@ bun install
 1. Create the database:
 
    ```bash
-   db:create
+   bun run db:create
    ```
 
 2. Update the **Database ID** in `wrangler.toml`.
 3. Migrate the database:
 
    ```bash
-   db:migrate
+   bun run db:migrate
    ```
 
    (Run migration twice to ensure updates are applied.)
