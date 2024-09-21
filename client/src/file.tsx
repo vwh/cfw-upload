@@ -147,23 +147,23 @@ export default function FilePage() {
         </div>
       </section>
       <div className="mx-auto flex w-full max-w-2xl items-center gap-2 rounded border p-2 text-center">
-        <Button
-          onClick={() => copyToClipboard(`${CDN_BASE_URL}/${fileData.id}`)}
-          variant="ghost"
-        >
-          <ClipboardIcon className="h-6 w-6 text-gray-400" />
-        </Button>
         <a
           href={`${CDN_BASE_URL}/${fileData.id}`}
           target="_blank"
           rel="noreferrer"
-          className="mx-auto flex w-full max-w-2xl items-center gap-2 rounded border p-2 text-center"
+          className="mx-auto flex w-full max-w-2xl items-center gap-2 text-center"
         >
-          <SquareArrowOutUpRightIcon className="h-9 w-9 text-gray-400" />
-          <span className="max-w-[250px] truncate sm:max-w-full">
+          <SquareArrowOutUpRightIcon className="h-8 w-8 text-gray-400" />
+          <span className="max-w-[220px] truncate sm:max-w-full">
             {`${CDN_BASE_URL}/${fileData.id}`}
           </span>
         </a>
+        <button
+          type="button"
+          onClick={() => copyToClipboard(`${CDN_BASE_URL}/${fileData.id}`)}
+        >
+          <ClipboardIcon className="h-8 w-8 px-0 text-gray-400" />
+        </button>
       </div>
     </>
   );
