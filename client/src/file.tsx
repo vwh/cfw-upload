@@ -13,8 +13,10 @@ import {
 import {
   LoaderCircleIcon,
   FileIcon,
-  SquareArrowOutUpRightIcon
+  SquareArrowOutUpRightIcon,
+  ClipboardIcon
 } from "lucide-react";
+import { toast } from "sonner";
 
 export default function FilePage() {
   const { id } = useParams<{ id: string }>();
@@ -76,6 +78,17 @@ export default function FilePage() {
     }
   }, [id, fileData, cachedFileBuffer]);
 
+  const copyToClipboard = useCallback((url: string) => {
+    navigator.clipboard.writeText(url).then(
+      () => {
+        toast.success("URL copied to clipboard!");
+      },
+      () => {
+        toast.error("Failed to copy URL");
+      }
+    );
+  }, []);
+
   if (isLoading) {
     return <Skeleton className="h-[260px] w-full rounded-lg md:w-[600px]" />;
   }
@@ -133,15 +146,25 @@ export default function FilePage() {
           </Button>
         </div>
       </section>
-      <a
-        href={`${CDN_BASE_URL}/${fileData.id}`}
-        target="_blank"
-        rel="noreferrer"
-        className="mx-auto flex w-full max-w-2xl items-center gap-2 rounded border p-2 text-center"
-      >
-        <SquareArrowOutUpRightIcon className="h-9 w-9 text-gray-400" />
-        <span className="max-w-[250px] truncate sm:max-w-full">{`${CDN_BASE_URL}/${fileData.id}`}</span>
-      </a>
+      <div className="mx-auto flex w-full max-w-2xl items-center gap-2 rounded border p-2 text-center">
+        <Button
+          onClick={() => copyToClipboard(`${CDN_BASE_URL}/${fileData.id}`)}
+          variant="ghost"
+        >
+          <ClipboardIcon className="h-6 w-6 text-gray-400" />
+        </Button>
+        <a
+          href={`${CDN_BASE_URL}/${fileData.id}`}
+          target="_blank"
+          rel="noreferrer"
+          className="mx-auto flex w-full max-w-2xl items-center gap-2 rounded border p-2 text-center"
+        >
+          <SquareArrowOutUpRightIcon className="h-9 w-9 text-gray-400" />
+          <span className="max-w-[250px] truncate sm:max-w-full">
+            {`${CDN_BASE_URL}/${fileData.id}`}
+          </span>
+        </a>
+      </div>
     </>
   );
 }
