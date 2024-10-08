@@ -70,4 +70,70 @@
     --scrollbar-thumb: hsl(var(--muted-foreground) / 0.5);
     --scrollbar-thumb-hover: hsl(var(--muted-foreground) / 0.7);
   }
+
+  /* Noise effect */
+  .overlay {
+    position: absolute;
+    background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.5));
+    z-index: -1;
+  }
+
+  .noise {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .noise:after {
+    content: "";
+    background-image: url("/noise.webp");
+    height: 300%;
+    width: 300%;
+    position: fixed;
+    opacity: 0.07;
+    animation: animateGrain 8s steps(10) infinite;
+  }
+
+  @keyframes animateGrain {
+    0%,
+    100% {
+      transform: translate(0, 0);
+    }
+    10% {
+      transform: translate(-5%, -10%);
+    }
+    20% {
+      transform: translate(-15%, -20%);
+    }
+    30% {
+      transform: translate(-5%, -10%);
+    }
+    40% {
+      transform: translate(-15%, -20%);
+    }
+
+    50% {
+      transform: translate(-5%, -10%);
+    }
+    60% {
+      transform: translate(-15%, -20%);
+    }
+    70% {
+      transform: translate(-5%, -10%);
+    }
+    80% {
+      transform: translate(-15%, -20%);
+    }
+    90% {
+      transform: translate(-5%, -10%);
+    }
+    100% {
+      transform: translate(-15%, -20%);
+    }
+  }
 }

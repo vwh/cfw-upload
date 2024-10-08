@@ -13,8 +13,9 @@ export const CDN_BASE_URL = "https://cdn.vwh.sh";
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <Router>
-      <main className="container mx-auto">
-        <div className="mt-8 flex h-full flex-col items-center gap-6">
+      <main className="noise container mx-auto">
+        <div className="overlay" />
+        <div className="z-20 mt-8 flex h-full w-full flex-col items-center gap-6">
           <Link to="/">
             <img
               draggable={false}
