@@ -2,14 +2,14 @@ import { useCallback, useState, useMemo, useEffect } from "react";
 import { useDropzone, type FileRejection } from "react-dropzone";
 
 import { API_BASE_URL } from "@/main";
+import type { UploadedFile, UploadResponse } from "@/types";
+
 import { toast } from "sonner";
 import {
   UploadIcon,
   SquareArrowOutUpRightIcon,
   LoaderCircleIcon
 } from "lucide-react";
-
-import type { UploadedFile, UploadResponse } from "@/types";
 
 const MAX_FILES = 6;
 const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100 MB
@@ -100,12 +100,12 @@ export default function UploadDropzone() {
 
   const dropzoneClass = useMemo(
     () => `
-    flex w-full transform cursor-pointer flex-col items-center justify-center
+    flex w-full bg-primary/10 transform cursor-pointer flex-col items-center justify-center
     rounded-lg border-2 border-dashed p-6 py-12 transition-colors duration-300 ease-in-out
     ${
       isDragActive
-        ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-        : "border-gray-300 hover:border-gray-400 dark:border-gray-700 dark:hover:border-gray-600"
+        ? "border-blue-500 bg-blue-50"
+        : "border-primary/50 hover:border-primary/50 hover:scale-[1.02] transition-transform duration-300"
     }
   `,
     [isDragActive]
@@ -114,7 +114,7 @@ export default function UploadDropzone() {
   const FileStatus = ({ uploadedFile }: { uploadedFile: UploadedFile }) => {
     if (uploadedFile.isUploading) {
       return (
-        <LoaderCircleIcon className="h-full w-full animate-spin text-gray-400" />
+        <LoaderCircleIcon className="h-full w-full animate-spin text-primary" />
       );
     }
     return (
@@ -123,7 +123,7 @@ export default function UploadDropzone() {
         target="_blank"
         rel="noreferrer"
       >
-        <SquareArrowOutUpRightIcon className="h-9 w-9 text-gray-400" />
+        <SquareArrowOutUpRightIcon className="h-9 w-9 text-primary" />
       </a>
     );
   };
@@ -132,12 +132,12 @@ export default function UploadDropzone() {
     <section className="mx-auto w-full space-y-3">
       <div {...getRootProps()} className={dropzoneClass}>
         <input {...getInputProps()} />
-        <UploadIcon className="h-10 w-10 text-gray-400" />
-        <p className="text-md mt-2 text-gray-500">
+        <UploadIcon className="h-10 w-10" />
+        <p className="text-md mt-2">
           <span className="font-semibold">Click to upload</span> or drag and
           drop
         </p>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm text-primary/50">
           Max {MAX_FILES} files, up to 100 MB each
         </p>
       </div>
@@ -146,7 +146,7 @@ export default function UploadDropzone() {
           {uploadedFiles.map((uploadedFile, index) => (
             <div
               key={`${uploadedFile.file.name}-${index}`}
-              className="relative flex items-center gap-1 rounded-lg border p-2 hover:border-gray-400 dark:border-gray-700 dark:hover:border-gray-600"
+              className="relative flex items-center gap-1 rounded-lg border bg-primary/10 p-2 hover:border-primary/50"
             >
               <div className="relative h-9 w-9">
                 {<FileStatus uploadedFile={uploadedFile} />}
@@ -156,7 +156,7 @@ export default function UploadDropzone() {
                   {uploadedFile.file.name}
                 </p>
                 {uploadedFile.isUploading ? (
-                  <p className="text-gray-500">Uploading</p>
+                  <p className="text-primary">Uploading</p>
                 ) : uploadedFile.response ? (
                   <a
                     href={`${currentURL}${uploadedFile.response.fileId}`}
@@ -170,7 +170,7 @@ export default function UploadDropzone() {
                     {uploadedFile.response.fileId}
                   </a>
                 ) : (
-                  <p className="text-xs text-gray-500">Upload failed</p>
+                  <p className="text-xs text-primary">Upload failed</p>
                 )}
               </div>
             </div>

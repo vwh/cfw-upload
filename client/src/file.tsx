@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 
 import { API_BASE_URL, CDN_BASE_URL } from "@/main";
 import type { FileData } from "@/types";
+
+import { toast } from "sonner";
 import { Button } from "./components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -10,13 +12,13 @@ import {
   formatFileSize,
   formatTimeAgo
 } from "@/lib/formaters";
+
 import {
   LoaderCircleIcon,
   FileIcon,
   SquareArrowOutUpRightIcon,
   ClipboardIcon
 } from "lucide-react";
-import { toast } from "sonner";
 
 export default function FilePage() {
   const { id } = useParams<{ id: string }>();
@@ -90,12 +92,14 @@ export default function FilePage() {
   }, []);
 
   if (isLoading) {
-    return <Skeleton className="h-[260px] w-full rounded-lg md:w-[600px]" />;
+    return (
+      <Skeleton className="h-[260px] w-full rounded-lg bg-primary/10 md:w-[600px]" />
+    );
   }
 
   if (!fileData) {
     return (
-      <p className="w-full rounded-lg border p-6 text-center shadow-sm">
+      <p className="w-full rounded-lg border bg-primary/10 p-6 text-center text-2xl shadow-sm">
         This file does not exist
       </p>
     );
@@ -104,9 +108,9 @@ export default function FilePage() {
   return (
     <>
       <section className="mx-auto w-full max-w-2xl space-y-3">
-        <div className="rounded-lg border p-6 shadow-sm">
+        <div className="rounded-lg border bg-primary/10 p-6 shadow-sm">
           <div className="space-y-4">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
               <FileIcon className="h-12 w-12" />
               <h2 className="max-w-[250px] truncate font-semibold text-primary sm:max-w-full md:text-2xl">
                 {fileData.name}
@@ -146,14 +150,14 @@ export default function FilePage() {
           </Button>
         </div>
       </section>
-      <div className="mx-auto flex w-full max-w-2xl items-center gap-2 rounded border p-2 text-center">
+      <div className="mx-auto flex w-full max-w-2xl items-center gap-2 rounded border bg-primary/10 p-2 text-center">
         <a
           href={`${CDN_BASE_URL}/${fileData.id}`}
           target="_blank"
           rel="noreferrer"
           className="mx-auto flex w-full max-w-2xl items-center gap-2 text-center"
         >
-          <SquareArrowOutUpRightIcon className="h-8 w-8 text-gray-400" />
+          <SquareArrowOutUpRightIcon className="h-8 w-8 text-primary" />
           <span className="max-w-[220px] truncate sm:max-w-full">
             {`${CDN_BASE_URL}/${fileData.id}`}
           </span>
@@ -162,7 +166,7 @@ export default function FilePage() {
           type="button"
           onClick={() => copyToClipboard(`${CDN_BASE_URL}/${fileData.id}`)}
         >
-          <ClipboardIcon className="h-8 w-8 px-0 text-gray-400" />
+          <ClipboardIcon className="h-8 w-8 px-0 text-primary" />
         </button>
       </div>
     </>
